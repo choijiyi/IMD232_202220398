@@ -23,6 +23,7 @@ function setup () {
 
     let arrow = Vertices.fromPath ('5 -15 5 -5 30 -5 36 20 5 20 4 30 -8 10');
     let arroww = Vertices.fromPath ('5 -15 5 -5 30 -5 36 20 5 20 4 30 -8 10');
+    let arrowww = Vertices.fromPath ('5 -15 5 -5 30 -5 36 20 5 20 4 30 -8 10');
     
 
     // add bodies
@@ -41,19 +42,21 @@ function setup () {
         stiffness: 0.5
     }));
 
+    group = Body.nextGroup(true);
+        
     ropeB = Composites.stack(350, 50, 10, 1, 10, 10, function(x, y) {
-        return Bodies.fromVertices(x, y, Common.choose ([arrow]),
+        return Bodies.fromVertices(x, y, Common.choose ([arrowww]),
         {collisionFilter : {group: group}});
     });
     
     Composites.chain(ropeB, 0.5, 0, -0.5, 0, { stiffness: 0.8, length: 2, render: { type: 'line' } });
     Composite.add(ropeB, Constraint.create({ 
         bodyB: ropeB.bodies[0],
-        pointB: { x: -20, y: 0 },
-        pointA: { x: ropeB.bodies[0].position.x, y: ropeB.bodies[0].position.y },
+        pointB: { x: -25, y: 0 },
+        pointA: { x: ropeB.bodies[0].position.x, y: ropeA.bodies[0].position.y },
         stiffness: 0.5
     }));
-    
+
     // group = Body.nextGroup(true);
     
     // ropeB = Composites.stack(350, 50, 10, 1, 10, 10, function(x, y) {
