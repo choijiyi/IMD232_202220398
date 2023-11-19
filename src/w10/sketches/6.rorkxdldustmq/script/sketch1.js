@@ -1,48 +1,41 @@
-const latticeWidth = 512
-const latticeHeight = 512
+const tiles = [];
 
-let rockPaperScissorsShader
-let backBuffer
-let canvas
+const colNum = 50,
+  rowNum = colNum;
+
+
 
 // function preload(){
-//     rockPaperScissorsShader = loadShader('rockPaperScissors/vertex.glsl', 'rockPaperScissors/fragment.glsl')
-//   }
-
+    //     rockPaperScissorsShader = loadShader('rockPaperScissors/vertex.glsl', 'rockPaperScissors/fragment.glsl')
+    //   }
+    
 function setup() {
-  canvas = ('#canvas', latticeWidth, latticeHeight);
-  backBuffer = createGraphics(latticeWidth, latticeHeight);
-
-  frameRate(30);
-
-  let initialFrame = createImage(latticeWidth, latticeHeight);
-  initialFrame.loadPixels();
-  for (y = 0; y < initialFrame.height; y++) {
-    for (x = 0; x < initialFrame.width; x++) {
-      let index = (x + y * latticeWidth) * 4
-      initialFrame.pixels[index+random([0,1,2])] = 255
-      initialFrame.pixels[index + 3] = 255
+    setCanvasContainer ('canvas', 1, 1, true);
+    const w = width / colNum;
+    const h = w;
+    for (let row = 0; row < rowNum; row++) {
+        for (let col = 0; col < colNum; col++) {
+            const x = w * col;
+            const y = h * row;
+            const newTile = new Tile(x, y, w, h);
+            tiles.push(newTile);
+        }
     }
-  }
-  initialFrame.updatePixels();
-
-  backBuffer.clear();
-  backBuffer.image(initialFrame, latticeWidth * -0.5, latticeHeight * -0.5);
-
-  background('white');
+    
+    background('white');
 }
 
 function draw() {
-    clear();
-  
-    shader(rockPaperScissorsShader);
-    rockPaperScissorsShader.setUniform('backBuffer', backBuffer);
-    rockPaperScissorsShader.setUniform("canvasSize", [latticeWidth, latticeHeight])
-  
-    quad(0, 0, 1, 0, 1, 1, 0, 1)
-  
-    backBuffer.clear();
-    backBuffer.image(canvas, latticeWidth * -0.5, latticeHeight * -0.5);
+    background(255);
 
-    background('white');
+  tiles.forEach((each) => {
+    each.calcNextState();
+  });
+  tiles.forEach((each) => {
+    each.update();
+  });
+
+  tiles.forEach((each) => {
+    each.display(mouseX, mouseY);
+  });
 }
